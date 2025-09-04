@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Matematika Interaktif</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }
+            40%, 43% { transform: translate3d(0,-30px,0); }
+            70% { transform: translate3d(0,-15px,0); }
+            90% { transform: translate3d(0,-4px,0); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes rainbow {
+            0% { color: #ff0000; }
+            16% { color: #ff8000; }
+            33% { color: #ffff00; }
+            50% { color: #00ff00; }
+            66% { color: #0080ff; }
+            83% { color: #8000ff; }
+            100% { color: #ff0000; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes wiggle {
+            0%, 7% { transform: rotateZ(0); }
+            15% { transform: rotateZ(-15deg); }
+            20% { transform: rotateZ(10deg); }
+            25% { transform: rotateZ(-10deg); }
+            30% { transform: rotateZ(6deg); }
+            35% { transform: rotateZ(-4deg); }
+            40%, 100% { transform: rotateZ(0); }
+        }
+        .bounce { animation: bounce 1s ease-in-out; }
+        .pulse { animation: pulse 2s infinite; }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        .rainbow-text { animation: rainbow 3s linear infinite; }
+        .float { animation: float 3s ease-in-out infinite; }
+        .spin { animation: spin 2s linear infinite; }
+        .wiggle { animation: wiggle 2s ease-in-out infinite; }
+        .quiz-card:hover { transform: translateY(-5px) scale(1.05); transition: all 0.3s ease; }
+        .correct-bg { background: linear-gradient(135deg, #10b981, #059669, #34d399, #6ee7b7); }
+        .incorrect-bg { background: linear-gradient(135deg, #ef4444, #dc2626, #f87171, #fca5a5); }
+        .math-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .sticker { 
+            display: inline-block; 
+            padding: 8px; 
+            border-radius: 50%; 
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-400 to-purple-600">
+    <!-- Welcome Screen -->
+    <div id="welcomeScreen" class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+        <!-- Floating Math Icons -->
+        <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute top-10 left-10 text-4xl float">🔢</div>
+            <div class="absolute top-20 right-20 text-3xl spin">➕</div>
+            <div class="absolute bottom-20 left-20 text-3xl wiggle">➖</div>
+            <div class="absolute bottom-10 right-10 text-4xl float">✖️</div>
+            <div class="absolute top-1/2 left-5 text-3xl pulse">➗</div>
+            <div class="absolute top-1/3 right-5 text-4xl bounce">🧮</div>
+            <div class="absolute bottom-1/3 left-1/4 text-3xl spin">📊</div>
+            <div class="absolute top-1/4 right-1/3 text-3xl wiggle">📐</div>
+        </div>
+        
+        <div class="math-bg rounded-3xl shadow-2xl p-8 max-w-md w-full text-center fade-in relative z-10">
+            <div class="sticker mb-4">
+                <div class="text-6xl bounce">🧠</div>
+            </div>
+            <h1 class="text-4xl font-bold text-white mb-4 drop-shadow-lg">Kuis Matematika Seru!</h1>
+            <div class="flex justify-center gap-2 mb-4">
+                <span class="text-2xl float">🎨</span>
+                <span class="text-2xl spin">🌈</span>
+                <span class="text-2xl wiggle">⭐</span>
+            </div>
+            <p class="text-white font-bold mb-6 text-lg drop-shadow-lg bg-black bg-opacity-30 rounded-full px-4 py-2">Selamat datang! Mari belajar matematika dengan cara yang menyenangkan dan penuh warna!</p>
+            <input type="text" id="studentName" placeholder="Masukkan nama kamu..." 
+                   class="w-full p-3 border-4 border-yellow-400 rounded-xl mb-4 focus:border-pink-500 focus:outline-none text-center text-lg font-bold bg-white shadow-lg">
+            <button onclick="startQuiz()" 
+                    class="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 text-white py-4 px-6 rounded-xl font-bold text-lg hover:from-pink-600 hover:to-indigo-600 transition-all duration-300 transform hover:scale-110 shadow-xl wiggle">
+                🚀 Mulai Petualangan Matematika! 🌟
+            </button>
+        </div>
+    </div>
+
+    <!-- Quiz Selection Screen -->
+    <div id="quizScreen" class="min-h-screen p-4 hidden relative overflow-hidden">
+        <!-- Floating Math Symbols -->
+        <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute top-5 left-10 text-3xl float">🔢</div>
+            <div class="absolute top-10 right-15 text-2xl spin">➕</div>
+            <div class="absolute bottom-20 left-5 text-2xl wiggle">➖</div>
+            <div class="absolute bottom-5 right-20 text-3xl float">✖️</div>
+            <div class="absolute top-1/3 left-2 text-2xl pulse">➗</div>
+            <div class="absolute top-2/3 right-5 text-3xl bounce">🧮</div>
+            <div class="absolute bottom-1/4 left-1/3 text-2xl spin">📊</div>
+            <div class="absolute top-1/5 right-1/4 text-2xl wiggle">📐</div>
+        </div>
+        
+        <div class="max-w-6xl mx-auto relative z-10">
+            <div class="text-center mb-8">
+                <div class="sticker mb-4 inline-block">
+                    <span class="text-4xl bounce">🎯</span>
+                </div>
+                <h2 class="text-5xl font-bold text-white mb-4 drop-shadow-lg">Halo, <span id="displayName" class="text-yellow-300 bg-black bg-opacity-50 px-3 py-1 rounded-full"></span>! 👋</h2>
+                <div class="flex justify-center gap-3 mb-4">
+                    <span class="text-3xl float">🌟</span>
+                    <span class="text-3xl spin">🎨</span>
+                    <span class="text-3xl wiggle">🏆</span>
+                </div>
+                <p class="text-white text-xl font-bold bg-black bg-opacity-70 rounded-full px-6 py-3 inline-block shadow-lg border-4 border-white">Pilih nomor soal yang ingin kamu kerjakan!</p>
+            </div>
+            
+            <div class="grid grid-cols-5 gap-4 mb-8">
+                <!-- Quiz Cards will be generated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Question Modal -->
+    <div id="questionModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-50">
+        <div class="math-bg rounded-3xl shadow-2xl p-8 max-w-lg w-full text-center border-4 border-yellow-400">
+            <div class="sticker mb-4 inline-block">
+                <div id="animalDisplay" class="text-6xl bounce"></div>
+            </div>
+            <h3 class="text-3xl font-bold text-white mb-4 drop-shadow-lg bg-black bg-opacity-50 rounded-full px-4 py-2">🎯 Soal <span id="questionNumber"></span> 🎯</h3>
+            <div class="bg-white rounded-2xl p-6 mb-6 shadow-inner border-4 border-pink-300">
+                <p id="questionText" class="text-3xl font-bold text-gray-800"></p>
+            </div>
+            <input type="number" id="answerInput" placeholder="Masukkan jawabanmu..." 
+                   class="w-full p-4 border-4 border-purple-400 rounded-xl mb-6 focus:border-yellow-500 focus:outline-none text-center text-2xl font-bold bg-yellow-100 shadow-lg">
+            <div class="flex gap-3">
+                <button onclick="submitAnswer()" 
+                        class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4 px-6 rounded-xl font-bold text-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-xl">
+                    🚀 Kirim Jawaban!
+                </button>
+                <button onclick="closeModal()" 
+                        class="flex-1 bg-gradient-to-r from-red-500 to-pink-600 text-white py-4 px-6 rounded-xl font-bold text-lg hover:from-red-600 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-xl">
+                    ❌ Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div id="feedbackModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-50">
+        <div class="math-bg rounded-3xl shadow-2xl p-8 max-w-lg w-full text-center border-4 border-white">
+            <div class="sticker mb-4 inline-block">
+                <div id="feedbackEmoji" class="text-8xl wiggle"></div>
+            </div>
+            <h3 id="feedbackTitle" class="text-4xl font-bold mb-4 text-white drop-shadow-lg bg-black bg-opacity-50 rounded-full px-4 py-2"></h3>
+            <div class="bg-white rounded-2xl p-6 mb-6 border-4 border-yellow-400 shadow-xl">
+                <p id="feedbackMessage" class="text-2xl font-bold text-gray-800"></p>
+            </div>
+            <button onclick="closeFeedback()" 
+                    class="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white py-4 px-8 rounded-xl font-bold text-lg hover:from-purple-600 hover:to-red-600 transition-all duration-300 transform hover:scale-110 shadow-xl pulse">
+                🌟 Lanjutkan Petualangan! 🌟
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "25 + 17 = ", answer: 42, animal: "🐸", color: "bg-green-500" },
+            { question: "48 - 19 = ", answer: 29, animal: "🦋", color: "bg-purple-500" },
+            { question: "6 × 7 = ", answer: 42, animal: "🐰", color: "bg-pink-500" },
+            { question: "56 ÷ 8 = ", answer: 7, animal: "🌻", color: "bg-yellow-500" },
+            { question: "15 + 28 - 9 = ", answer: 34, animal: "🐝", color: "bg-orange-500" },
+            { question: "9 × 5 + 12 = ", answer: 57, animal: "🌺", color: "bg-red-500" },
+            { question: "72 ÷ 9 - 3 = ", answer: 5, animal: "🐢", color: "bg-green-600" },
+            { question: "14 + 6 × 3 = ", answer: 32, animal: "🦜", color: "bg-blue-500" },
+            { question: "90 - 45 ÷ 5 = ", answer: 81, animal: "🌳", color: "bg-emerald-600" },
+            { question: "8 × 4 + 20 ÷ 5 = ", answer: 36, animal: "🐙", color: "bg-indigo-500" },
+            { question: "100 - 25 × 2 = ", answer: 50, animal: "🌹", color: "bg-rose-500" },
+            { question: "36 ÷ 6 + 15 = ", answer: 21, animal: "🐧", color: "bg-cyan-500" },
+            { question: "7 × 8 - 30 = ", answer: 26, animal: "🌿", color: "bg-lime-500" },
+            { question: "50 + 24 ÷ 4 = ", answer: 56, animal: "🦊", color: "bg-amber-500" },
+            { question: "18 + 27 - 14 = ", answer: 31, animal: "🌸", color: "bg-fuchsia-500" },
+            { question: "45 ÷ 5 + 9 × 2 = ", answer: 27, animal: "🐨", color: "bg-gray-500" },
+            { question: "60 - 12 + 7 = ", answer: 55, animal: "🌵", color: "bg-teal-500" },
+            { question: "5 × 9 - 20 ÷ 4 = ", answer: 41, animal: "🦆", color: "bg-sky-500" },
+            { question: "33 + 44 - 22 = ", answer: 55, animal: "🌾", color: "bg-yellow-600" },
+            { question: "81 ÷ 9 + 16 = ", answer: 25, animal: "🐯", color: "bg-orange-600" },
+            { question: "12 × 3 - 15 = ", answer: 21, animal: "🌼", color: "bg-violet-500" },
+            { question: "70 - 35 + 10 = ", answer: 45, animal: "🐬", color: "bg-blue-600" },
+            { question: "24 ÷ 3 + 18 = ", answer: 26, animal: "🌻", color: "bg-yellow-400" },
+            { question: "8 × 6 - 28 = ", answer: 20, animal: "🦅", color: "bg-slate-600" },
+            { question: "90 + 10 ÷ 2 = ", answer: 95, animal: "🌺", color: "bg-pink-600" }
+        ];
+
+        let currentQuestion = 0;
+        let studentName = "";
+        let answeredQuestions = new Set();
+
+        function startQuiz() {
+            const nameInput = document.getElementById('studentName');
+            if (nameInput.value.trim() === '') {
+                alert('Silakan masukkan nama kamu terlebih dahulu!');
+                return;
+            }
+            
+            studentName = nameInput.value.trim();
+            document.getElementById('displayName').textContent = studentName;
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            
+            generateQuizCards();
+        }
+
+        function generateQuizCards() {
+            const container = document.querySelector('.grid');
+            container.innerHTML = '';
+            
+            questions.forEach((q, index) => {
+                const card = document.createElement('div');
+                const isAnswered = answeredQuestions.has(index);
+                card.className = `quiz-card ${q.color} rounded-2xl p-4 shadow-xl ${isAnswered ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:shadow-2xl'} transform transition-all duration-300 border-4 border-white ${isAnswered ? 'ring-4 ring-green-400' : ''}`;
+                card.innerHTML = `
+                    <div class="bg-white rounded-full w-16 h-16 flex items-center justify-center mb-2 mx-auto shadow-lg">
+                        <div class="text-3xl ${isAnswered ? 'bounce' : 'pulse'}">${q.animal}</div>
+                    </div>
+                    <div class="text-2xl font-bold text-white bg-black bg-opacity-80 rounded-full px-4 py-2 mb-2 border-2 border-white">${index + 1}</div>
+                    ${isAnswered ? '<div class="text-green-300 text-lg font-bold bg-black bg-opacity-80 rounded-full px-3 py-1">✅ Selesai!</div>' : '<div class="text-white text-sm font-bold bg-black bg-opacity-60 rounded-full px-3 py-1">Klik untuk mulai!</div>'}
+                `;
+                card.onclick = () => {
+                    if (!isAnswered) {
+                        openQuestion(index);
+                    }
+                };
+                container.appendChild(card);
+            });
+        }
+
+        function openQuestion(index) {
+            currentQuestion = index;
+            const question = questions[index];
+            
+            document.getElementById('questionNumber').textContent = index + 1;
+            document.getElementById('questionText').textContent = question.question;
+            document.getElementById('animalDisplay').textContent = question.animal;
+            document.getElementById('answerInput').value = '';
+            document.getElementById('questionModal').classList.remove('hidden');
+            document.getElementById('questionModal').classList.add('flex');
+            
+            // Add bounce animation to animal
+            document.getElementById('animalDisplay').classList.add('bounce');
+            setTimeout(() => {
+                document.getElementById('animalDisplay').classList.remove('bounce');
+            }, 1000);
+            
+            // Focus on input
+            setTimeout(() => {
+                document.getElementById('answerInput').focus();
+            }, 100);
+        }
+
+        function closeModal() {
+            document.getElementById('questionModal').classList.add('hidden');
+            document.getElementById('questionModal').classList.remove('flex');
+        }
+
+        function submitAnswer() {
+            const userAnswer = parseInt(document.getElementById('answerInput').value);
+            const correctAnswer = questions[currentQuestion].answer;
+            
+            if (isNaN(userAnswer)) {
+                alert('Silakan masukkan jawaban berupa angka!');
+                return;
+            }
+            
+            closeModal();
+            showFeedback(userAnswer === correctAnswer);
+            
+            if (userAnswer === correctAnswer) {
+                answeredQuestions.add(currentQuestion);
+                generateQuizCards();
+            }
+        }
+
+        function showFeedback(isCorrect) {
+            const modal = document.getElementById('feedbackModal');
+            const emoji = document.getElementById('feedbackEmoji');
+            const title = document.getElementById('feedbackTitle');
+            const message = document.getElementById('feedbackMessage');
+            
+            if (isCorrect) {
+                document.body.classList.add('correct-bg');
+                emoji.textContent = '🎊🏆🎉';
+                title.textContent = '🌟 HEBAT SEKALI! 🌟';
+                message.textContent = `Selamat, ${studentName}! Jawabanmu benar! Kamu pintar sekali! 🎯✨`;
+                
+                // Add celebration effects
+                setTimeout(() => {
+                    emoji.classList.add('spin');
+                }, 500);
+            } else {
+                document.body.classList.add('incorrect-bg');
+                emoji.textContent = '🤔💭🔄';
+                title.textContent = '💪 COBA LAGI! 💪';
+                message.textContent = `Tidak apa-apa, ${studentName}! Mari coba lagi dengan semangat! Kamu pasti bisa! 🚀`;
+                
+                // Add encouraging effects
+                setTimeout(() => {
+                    emoji.classList.add('wiggle');
+                }, 500);
+            }
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            // Add bounce animation to emoji
+            emoji.classList.add('bounce');
+            setTimeout(() => {
+                emoji.classList.remove('bounce', 'spin', 'wiggle');
+            }, 2000);
+        }
+
+        function closeFeedback() {
+            document.getElementById('feedbackModal').classList.add('hidden');
+            document.getElementById('feedbackModal').classList.remove('flex');
+            document.body.classList.remove('correct-bg', 'incorrect-bg');
+            
+            // Check if all questions are answered
+            if (answeredQuestions.size === questions.length) {
+                setTimeout(() => {
+                    alert(`🎊 Selamat ${studentName}! Kamu telah menyelesaikan semua soal! Kerja bagus! 🎊`);
+                }, 500);
+            }
+        }
+
+        // Allow Enter key to submit answer
+        document.getElementById('answerInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitAnswer();
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9799d1cce0324068',t:'MTc1Njk1MDQ1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
