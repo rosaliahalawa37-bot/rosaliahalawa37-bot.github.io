@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <title>Profil Jeli Alvonzo Laia</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+        }
+        nav {
+            text-align: left;
+            margin-bottom: 10px;
+        }
+        nav a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: lch(28.42% 101.06 303.78);
+        }
+        hr {
+            margin: 20px 0;
+        }
+        img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block; 
+            margin: 0 auto; 
+        }
+        h2 {
+            text-align: center; 
+        }
+        .subtitle {
+            font-style: italic;
+            font-size: 0.9em;
+            text-align: center; 
+        }
+        .content-center {
+            text-align: center; 
+        }
+        table {
+            margin: 0 auto; 
+            border-collapse: collapse;
+            width: 50%;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th {
+            font-weight: bold;
+        }
+        ul {
+            text-align: left;
+            padding-left: 30px;
+            margin: 7px 0;
+        }
+        .section {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .contact-me,.about-me-section {
+            text-align: left;
+            padding-left: 20%;
+        }
+        video {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+        }
+        video {
+            width: 40%;
+            height: auto;
+        }
+        .about-me-section {
+    margin-top: 0px;
+}
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #f5f5f5; 
+    padding: 10px 0; 
+    text-align: center;
+}
+nav {
+    position: fixed;
+    top: 40;         
+    width: 100%;    
+    z-index: 1000;  
+    cursor: pointer; 
+}
+.section-content {
+    display: none;
+}
+.section-content.active {
+    display: block;
+}
+    </style>
+    <script>
+    function showSection(sectionId) {
+        const sections = document.querySelectorAll('.section-content');
+        sections.forEach(section => {
+            section.classList.remove('active');
+        });
+        const selectedSection = document.getElementById(sectionId);
+        selectedSection.classList.add('active');
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+        showSection('home');
+    });
+</script>
+</head>
+<body>
+    <nav>
+        <a onclick="showSection('home')">Home</a> |
+        <a onclick="showSection('contact')">Contact</a> |
+        <a onclick="showSection('about-me')">About me</a>
+    </nav>
+    <hr />
+<div id="home" class="section-content">
+    <img src="foto.jpg"/>
+    <h2 class="content-center"><b>Jeli Alvonzo Laia</b></h2>
+    <p class="subtitle content-center">(Web Developer)</p>
+
+    <hr />
+
+    <div class="section content-center">
+        <h2><b>Overview</b></h2>
+        <p>Hi, saya adalah web developer yang berdomisili di Medan. Saat ini sedang belajar HTML di Fasilkom-TI</p>
+    </div>
+
+    <table class="content-center">
+        <tr>
+            <th>Skill</th>
+            <th>Pengalaman</th>
+        </tr>
+        <tr>
+            <td>
+                <ul>
+                    <li>HTML (Expert)</li>
+                    <li>CSS (Beginner)</li>
+                    <li>Javascript (Beginner)</li>
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    <li>Database Administrator (DBA)</li>
+                    <li>Cybersecurity Analyst</li>
+                    <li>IT Support Specialist</li>
+                </ul>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="contact" class="section-content contact-me">
+        <h1>Contact Me</h1>
+        <form>
+            <label for="email"><b>Email</b></label><br>
+            <input type="email" id="email" name="email" placeholder="alamat email"><br>
+
+            <label for="message"><b>Pesan</b></label><br>
+            <textarea id="message" name="message" rows="4" cols="50" placeholder="Tulis pesan anda..."></textarea><br>
+
+            <input type="submit" value="Kirim">
+        </form>
+</div>
+<div id="about-me" class="section-content about-me-section">
+<h1>About Me</h1>
+    <p>Halo, perkenalkan saya mahasiswa baru program studi Teknologi Informasi di Universitas Sumatera Utara.</p>
+    <p>Sejak dulu, saya bercita-cita untuk kuliah di Perguruan Tinggi Negeri (PTN). Berbagai jalur saya coba untuk bisa memasuki PTN,</p>
+    <p>mulai dari SNBP, SNBT, hingga akhirnya saya diterima di USU melalui jalur mandiri.</p>
+    <p>Silahkan tonton video perkenalan singkat saya di bawah ini:</p>
+       <video controls width="500" height="250">
+    <source src="video.mp4" type="video/mp4">
+    Browser Anda tidak mendukung tag video.
+</video>
+</div>
+    <hr>
+    <footer class="content-center">
+        <div class="colorful-border"></div>
+        <div>Copyright © 2025 Jeli Alvonzo Laia.</div>
+    </footer>
+</body>
+</html>
